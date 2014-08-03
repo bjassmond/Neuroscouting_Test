@@ -232,8 +232,60 @@ var NodeView = Backbone.View.extend({
 
 });
 
-// Create the tree by a root node
-var rootNode = new NodeView({
-	levels: 4,
-	parent: null
+
+/*
+	var InputModel
+
+	Description: The input model (defined as a model in Backbone) to specify the number of levels to
+					generate for the binary tree.
+*/
+var InputModel = Backbone.Model.extend({
+
+	// Default parameters
+	defaults: {
+		value: 0
+	}
+
 });
+
+/*
+	var InputView
+
+	Description: The input view (defined as a view in Backbone) to display the direction text and input box
+					to generate a number of levels for a binary tree.
+*/
+
+var InputView = Backbone.View.extend({
+
+	// When declared, assign a new model to the view and format it's text to the HTML div. Bind a keypress
+	// 		function to the view so when Enter or Tab is pressed, it resets the tree and generates a new one
+	//		based on the held input.
+	initialize: function(params) {
+		var format = 'How many levels would you like to generate in the tree? <input size="2">';
+
+		this.model = new InputModel();
+
+		this.$el.html(format);
+
+		$('.treeInput').append(this.$el);
+
+		this.$('input').keypress(_.bind(function(event){
+			if(event.keyCode === 13 || event.charCode === 13 ||
+				event.keyCode === 9 || event.charCode === 9){
+
+				$('.tree').html('');
+
+				rootNode = new NodeView({
+					levels: parseInt(event.currentTarget.value),
+					parent: null
+				})
+			}
+		}, this));
+
+	}
+
+});
+
+// Declare the input view and root node.
+new InputView();
+var rootNode;
