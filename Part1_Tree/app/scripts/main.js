@@ -114,7 +114,8 @@ var NodeView = Backbone.View.extend({
 	className: "nodeView",
 
 	initialize: function(params) {
-		var format = '<input size="5" style="background-color: #e9e9e9;" readonly>';
+		var format = '<input class="node" size="2" style="background-color: #e9e9e9;" readonly>';
+		var space = '<input size=2 style="background-color: #e9e9e9;" readonly>';
 
 		this.model = new Node();
 
@@ -126,11 +127,15 @@ var NodeView = Backbone.View.extend({
 
 		if (params.levels > 0 && this.model.getParent() == null) {
 			this.updateValue();
-
 			var levels = params.levels;
+
+			for (var j = 0; j < Math.pow(2, levels - 1)/2; j++) $('.nodeView').append(space);
+			
 			for (var i = 0; i < levels - 1; i++) {
 				$('.tree').append('<div class="row"></div>');
+				for (var j = 0; j < Math.pow(2, levels - 2 - i); j++) $('.nodeView').prepend(space);
 				this.addChildren(i);
+				for (var j = 0; j < Math.pow(2, levels - 2 - i)/2; j++) $('.nodeView').append(space);
 				this.calculateLevelValue(i);
 			}
 		}
@@ -175,12 +180,12 @@ var NodeView = Backbone.View.extend({
 	updateValue: function() {
 		this.model.calculateValue();
 		var v = this.model.getValue();
-		this.$('input').val(v);
+		this.$('input.node').val(v);
 	}
 
 });
 
 var rootNode = new NodeView({
-	levels: 5,
+	levels: 6,
 	parent: null
 });
