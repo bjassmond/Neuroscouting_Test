@@ -97,10 +97,10 @@ var Node = Backbone.Model.extend({
 		}
 		else {
 			if (side == 'left') {
-				val = this.getLeftChild().getModel().getNeighborValue(level - 1)
+				val = this.getLeftChild().getModel().getNeighborValue(level - 1, side)
 			}
 			else {
-				val = this.getRightChild().getModel().getNeighborValue(level - 1);
+				val = this.getRightChild().getModel().getNeighborValue(level - 1, side);
 			}	
 		}
 
@@ -134,6 +134,8 @@ var NodeView = Backbone.View.extend({
 				this.calculateLevelValue(i);
 			}
 		}
+
+
 	},
 
 	getModel: function() {
@@ -179,6 +181,6 @@ var NodeView = Backbone.View.extend({
 });
 
 var rootNode = new NodeView({
-	levels: 4,
+	levels: 5,
 	parent: null
 });
