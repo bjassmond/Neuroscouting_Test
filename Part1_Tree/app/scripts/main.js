@@ -47,6 +47,62 @@ var Node = Backbone.Model.extend({
 		return this.set('rightChild', rc);
 	},
 
+	calculateValue: function() {
+		var parent = this.getParent();
+		if (parent != null) {
+			parent = parent.getModel();
+			var val = parent.getValue();
+
+			if (parent.getLeftChild().getModel() == this) {
+				val += parent.getSide('left', 0);
+			}
+			else if (parent.getRightChild().getModel() == this) {
+				val += parent.getSide('right', 0);
+			}
+			else alert("Parent node does not have this as a child");
+
+			this.setValue(val);
+		}
+		else this.setValue(0);
+	},
+
+	getSide: function(side, level) {
+		var parent = this.getParent().getModel();
+		var val = 0;
+
+		if (side == 'left') {
+			if (parent.getRightChild().getModel() == this) {
+				val += this.getLeftChild().getLevelValue(level);
+				if (parent.getParent() == null) val += parent.getLeftChild().getLevelValue(level + 1);
+				else val += parent.getSide(side, level + 1);
+			}
+			else val += parent.getSide(side, level + 1);
+		}
+		else if (side == 'right') {
+			if (parent.getLeftChild().getModel() == this) {
+				val += this.getRightChild().getModel().getLevelValue(level);
+				if (parent.getParent() == null) val += parent.getRightChild().getModel().getLevelValue(level + 1);
+				else val += parent.getSide(side, level + 1);
+			}
+			else val += parent.getSide(side, level + 1);
+		}
+
+		return val;
+	},
+
+	getLevelValue: function(level) {
+		var val = 0;
+
+		if (level == 0) {
+			val = this.getValue();
+		}
+		else {
+			val = this.getLeftChild().getLevelValue(level - 1) + this.getRightChild().getLevelValue(level - 1);
+		}
+
+		return val;
+	}
+
 });
 
 var NodeView = Backbone.View.extend({
@@ -62,6 +118,7 @@ var NodeView = Backbone.View.extend({
 
 		this.$el.html(format);
 
+		this.model.calculateValue();
 		var v = this.model.getValue();
 		this.$('input').val(v);
 
