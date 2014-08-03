@@ -126,7 +126,7 @@ var NodeView = Backbone.View.extend({
 			this.updateValue();
 
 			var levels = params.levels;
-			for (var i = 0; i < levels; i++) {
+			for (var i = 0; i < levels - 1; i++) {
 				$('.tree').append('<div class="row"></div>');
 				this.addChildren(i);
 				this.calculateLevelValue(i);
@@ -177,6 +177,6 @@ var NodeView = Backbone.View.extend({
 });
 
 var rootNode = new NodeView({
-	levels: 2,
+	levels: 4,
 	parent: null
 });
