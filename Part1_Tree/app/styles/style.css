@@ -1,3 +1,8 @@
 .nodeView {
 	float: left;
 }
+
+.row {
+	clear: both;
+	float: left;
+}
