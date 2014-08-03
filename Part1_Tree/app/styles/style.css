@@ -8,7 +8,5 @@
 }
 
 .tree {
-	width: 3000px;
-	height: 3000px;
 	overflow: scroll;
 }
