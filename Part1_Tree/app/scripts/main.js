@@ -63,28 +63,29 @@ var Node = Backbone.Model.extend({
 
 			this.setValue(val);
 		}
-		else this.setValue(0);
+		else this.setValue(1);
 	},
 
 	getSide: function(side, level) {
-		var parent = this.getParent().getModel();
+		var parent = this.getParent();
 		var val = 0;
 
-		if (side == 'left') {
-			if (parent.getRightChild().getModel() == this) {
-				val += this.getLeftChild().getLevelValue(level);
-				if (parent.getParent() == null) val += parent.getLeftChild().getLevelValue(level + 1);
+		if (parent != null) {
+			parent = this.getParent().getModel();
+			if (side == 'left') {
+				if (parent.getRightChild().getModel() == this) {
+					val += parent.getLeftChild().getModel().getLevelValue(level);
+					if (parent.getParent() != null) val += parent.getSide(side, level + 1);
+				}
 				else val += parent.getSide(side, level + 1);
 			}
-			else val += parent.getSide(side, level + 1);
-		}
-		else if (side == 'right') {
-			if (parent.getLeftChild().getModel() == this) {
-				val += this.getRightChild().getModel().getLevelValue(level);
-				if (parent.getParent() == null) val += parent.getRightChild().getModel().getLevelValue(level + 1);
+			else if (side == 'right') {
+				if (parent.getLeftChild().getModel() == this) {
+					val += parent.getRightChild().getModel().getLevelValue(level);
+					if (parent.getParent() != null) val += parent.getSide(side, level + 1);
+				}
 				else val += parent.getSide(side, level + 1);
 			}
-			else val += parent.getSide(side, level + 1);
 		}
 
 		return val;
@@ -97,7 +98,8 @@ var Node = Backbone.Model.extend({
 			val = this.getValue();
 		}
 		else {
-			val = this.getLeftChild().getLevelValue(level - 1) + this.getRightChild().getLevelValue(level - 1);
+			val = this.getLeftChild().getModel().getLevelValue(level - 1) + 
+				this.getRightChild().getModel().getLevelValue(level - 1);
 		}
 
 		return val;
@@ -118,17 +120,16 @@ var NodeView = Backbone.View.extend({
 
 		this.$el.html(format);
 
-		this.model.calculateValue();
-		var v = this.model.getValue();
-		this.$('input').val(v);
-
 		$('.tree').append(this.$el);
 
 		if (params.levels > 0 && this.model.getParent() == null) {
+			this.updateValue();
+
 			var levels = params.levels;
 			for (var i = 0; i < levels; i++) {
 				$('.tree').append('<div class="row"></div>');
 				this.addChildren(i);
+				this.calculateLevelValue(i);
 			}
 		}
 	},
@@ -154,6 +155,23 @@ var NodeView = Backbone.View.extend({
 			this.model.getLeftChild().addChildren(level - 1);
 			this.model.getRightChild().addChildren(level - 1);
 		}
+	},
+
+	calculateLevelValue: function(level) {
+		if (level == 0) {
+			this.model.getLeftChild().updateValue();
+			this.model.getRightChild().updateValue();
+		}
+		else {
+			this.model.getLeftChild().calculateLevelValue(level - 1);
+			this.model.getRightChild().calculateLevelValue(level - 1);
+		}
+	},
+
+	updateValue: function() {
+		this.model.calculateValue();
+		var v = this.model.getValue();
+		this.$('input').val(v);
 	}
 
 });
