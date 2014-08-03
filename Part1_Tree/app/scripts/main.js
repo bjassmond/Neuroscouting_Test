@@ -1,5 +1,14 @@
+/*
+	var Node
+
+	Description: The node model (defined as a model in Backbone) of a binary tree that holds a value and 
+					links to adjacent nodes (parent and children);
+
+*/
+
 var Node = Backbone.Model.extend({
 
+	// Default parameters
 	defaults: {
 		value: -1,
 		parent: null,
@@ -7,13 +16,18 @@ var Node = Backbone.Model.extend({
 		rightChild: null
 	},
 
+	// Run when a new Node is declared
 	initialize: function() {
 
 	},
 
+	// Sets the parent property
 	fill: function(params) {
 		this.setParent(params.parent);
 	},
+
+
+	// Get/Sets
 
 	getValue: function() {
 		return this.get('value');
@@ -47,6 +61,12 @@ var Node = Backbone.Model.extend({
 		return this.set('rightChild', rc);
 	},
 
+	// End Get/Sets
+
+
+	// Calculates and sets the value for a node. The calculation is the value of the parent and the neighboring
+	// 		node in the same direction as this child node is to it's parent (left child -> get left neighbor, 
+	// 		right -> right neighbor) if there is one.
 	calculateValue: function() {
 		var parent = this.getParent();
 		if (parent != null) {
@@ -66,6 +86,9 @@ var Node = Backbone.Model.extend({
 		else this.setValue(1);
 	},
 
+	// If there is a parent to the current node, recursively try to find the neighbor on the given side
+	// 		by running up the tree until the neighbor's branch and this branch meet (if they do) then 
+	// 		running back down the neighbor's branch.
 	getSide: function(side, level) {
 		var parent = this.getParent();
 		var val = 0;
@@ -89,6 +112,7 @@ var Node = Backbone.Model.extend({
 		return val;
 	},
 
+	// Runs down a branch to the given level and returns that value
 	getNeighborValue: function(level, side) {
 		var val = 0;
 
@@ -109,10 +133,22 @@ var Node = Backbone.Model.extend({
 
 });
 
+/*
+	var NodeView
+
+	Description: The node view (defined as a view in Backbone) of a binary tree. It represents each
+					node as a clear, readonly input box spaced apart by gray, readonly input boxes.
+
+*/
+
 var NodeView = Backbone.View.extend({
 
+	// Class name for the HTML div
 	className: "nodeView",
 
+	// When a new NodeView is made, assign it a Node for it's model, give it it's parent, format it,
+	// 		and add it to the HTML div for the tree. If this is the root node and there are multiple levels
+	// 		to show, create them and then calculate them level by level.
 	initialize: function(params) {
 		var format = '<input class="node" size="2" readonly>';
 		var space = '<input size=2 style="background-color: #e9e9e9;" readonly>';
@@ -144,10 +180,17 @@ var NodeView = Backbone.View.extend({
 
 	},
 
+	// Get/Set
+
+
 	getModel: function() {
 		return this.model;
 	},
 
+	// End Get/Set
+
+	// Recursively runs down the specified number of levels and adds children to the resulting node
+	// 		Note: There is no null checking currently. This is only meant to be called by intialize();
 	addChildren: function(level) {
 		if (level == 0) {
 
@@ -167,6 +210,8 @@ var NodeView = Backbone.View.extend({
 		}
 	},
 
+	// Recursively runs down the specified number of levels and caculates the values for each of the 
+	// 		children nodes at the specified level
 	calculateLevelValue: function(level) {
 		if (level == 0) {
 			this.model.getLeftChild().updateValue();
@@ -178,6 +223,7 @@ var NodeView = Backbone.View.extend({
 		}
 	},
 
+	// Calculate the current node's value and assign it to the input box
 	updateValue: function() {
 		this.model.calculateValue();
 		var v = this.model.getValue();
@@ -186,6 +232,7 @@ var NodeView = Backbone.View.extend({
 
 });
 
+// Create the tree by a root node
 var rootNode = new NodeView({
 	levels: 4,
 	parent: null
