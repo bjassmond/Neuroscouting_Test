@@ -8,7 +8,7 @@ High-level description:
 
 Organization:
 
-	I opted, for no particular reason, to include all files in a single main.js file for this exercise. All dependencies, locally stored, are loaded in the head of the HTML file before the script is run.
+	I opted, for no particular reason, to include all files in a single main.js file for this exercise. All dependencies, locally stored, are loaded in the head of the HTML file before the script is run. I chose this language and setup because I've been working with lately for a short-term job. I'm not the strongest in it, but as it's the most fresh in my mind, I decided to go with it.
 
 	The main library I used was Backbone, a model-view-controller library meant to organize program modules up into their actual purposes. The model contains the data and the view is how the model is displayed. I made models and views each for the tree input and nodes. The node model holds a value and references to adjacent nodes (parent and children) and the tree input model holds value to use with the tree (is currently unused). The node view formats the nodes into evenly distributed spreadsheet cells, with the nodes themselves being clear while the unused cells are gray. The tree input view specifies the question and input box that is displayed as well as starts the tree generation.
 
