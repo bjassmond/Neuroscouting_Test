@@ -74,32 +74,34 @@ var Node = Backbone.Model.extend({
 			parent = this.getParent().getModel();
 			if (side == 'left') {
 				if (parent.getRightChild().getModel() == this) {
-					val += parent.getLeftChild().getModel().getLevelValue(level);
-					if (parent.getParent() != null) val += parent.getSide(side, level + 1);
+					val = parent.getLeftChild().getModel().getNeighborValue(level, 'right');
 				}
 				else val += parent.getSide(side, level + 1);
 			}
-			else if (side == 'right') {
+			else {
 				if (parent.getLeftChild().getModel() == this) {
-					val += parent.getRightChild().getModel().getLevelValue(level);
-					if (parent.getParent() != null) val += parent.getSide(side, level + 1);
+					val = parent.getRightChild().getModel().getNeighborValue(level, 'left');
 				}
-				else val += parent.getSide(side, level + 1);
+				else val = parent.getSide(side, level + 1);
 			}
 		}
 
 		return val;
 	},
 
-	getLevelValue: function(level) {
+	getNeighborValue: function(level, side) {
 		var val = 0;
 
 		if (level == 0) {
 			val = this.getValue();
 		}
 		else {
-			val = this.getLeftChild().getModel().getLevelValue(level - 1) + 
-				this.getRightChild().getModel().getLevelValue(level - 1);
+			if (side == 'left') {
+				val = this.getLeftChild().getModel().getNeighborValue(level - 1)
+			}
+			else {
+				val = this.getRightChild().getModel().getNeighborValue(level - 1);
+			}	
 		}
 
 		return val;
