@@ -1,12 +1,16 @@
 .nodeView {
 	float: left;
+	overflow-x: visible;
 }
 
 .row {
 	clear: both;
-	float: left;
 }
 
 .tree {
-	
+	overflow-x: visible;
+}
+
+body {
+	overflow-x: visible;
 }
