@@ -174,8 +174,6 @@ var NodeView = Backbone.View.extend({
 				for (var j = 0; j < Math.pow(2, levels - 2 - i)/2; j++) $('.nodeView').append(space);
 				this.calculateLevelValue(i);
 			}
-
-			$('.tree').width((Math.pow(2, levels) + 1) * 35);
 		}
 
 	},

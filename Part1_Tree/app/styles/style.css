@@ -1,6 +1,5 @@
 .nodeView {
 	float: left;
-	overflow-x: visible;
 }
 
 .row {
@@ -8,9 +7,6 @@
 }
 
 .tree {
-	overflow-x: visible;
-}
-
-body {
-	overflow-x: visible;
+	white-space: nowrap;
+	display: inline-block;
 }
